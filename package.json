@@ -1,0 +1,21 @@
+{
+  "name": "restaurantpage",
+  "version": "1.0.0",
+  "description": "Odin Project: Restaurant",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^6.8.1",
+    "html-bundler-webpack-plugin": "^2.15.0",
+    "sass": "^1.69.4",
+    "sass-loader": "^13.3.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
