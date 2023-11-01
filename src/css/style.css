@@ -1,0 +1,152 @@
+* {
+    box-sizing: border-box;
+    font-family: "roboto";
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100svh;
+}
+
+
+/* --------Header--------*/
+header {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    padding: 0.5em;
+    color: white;
+    text-align: left;
+    background-color: #f95959;
+}
+
+.logo {
+    flex: 1;
+    height: 100%;
+    background-image: url(../images/logo.svg);
+    background-position: center;
+    background-size: auto;
+    background-repeat: no-repeat;
+}
+
+.title {
+    flex: 3;
+}
+
+/* --------Main--------*/
+main {
+    background-color: #455d7a;
+    flex: 1;
+}
+
+.tabContent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* --------Project Header--------*/
+.projectHeader {
+    background-color: #233142;
+    position: sticky;
+    top: 0;
+}
+
+.dropDownWrapper {
+    display: flex;
+    padding: 0.5em;
+    gap: 1em;
+    color: white;
+}
+
+.dropDownMenu {
+    flex: 1;
+}
+
+.projectDetails {
+    flex: 1;
+}
+
+.projectButtons {
+    display: flex;
+    gap: 1em;
+    padding: 0.5em;
+}
+
+.projectButtons > button {
+    border-style: none;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    flex: 1;
+    background-color: #f95959;
+    color: white;
+}
+
+/* --------Project Main--------*/
+.projectMain {
+    flex: 1;
+    padding: 0.5em;
+}
+
+.taskListContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 1em;
+    overflow: hidden;
+}
+
+.taskContainer {
+    display: flex;
+    gap: 1em;
+    padding: 0.5em;
+    color: white;
+    background-color: #233142;
+    box-shadow: 0px 1px 1px 0px white;
+    border-radius: 5px;
+    height: 3em;
+}
+
+.taskInfoContainer {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    flex: 1;
+    overflow: hidden;
+}
+
+.taskButtonContainer {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.taskButtonContainer > button {
+    width: 15vw;
+    padding: 0.5em 1em;
+    border-style: none;
+    border-radius: 5px;
+    background-color: #f95959;
+    color: white;
+}
+
+.taskEntryForm {
+    display: grid;
+    gap: 0.5em;
+}
+
+.projectEntryForm {
+    display: grid;
+    gap: 0.5em;
+}
+
+/* --------Footer--------*/
+footer {
+    padding: 0.5em;
+    color: white;
+    text-align: center;
+    background-color: #f95959;
+}
