@@ -30,7 +30,7 @@ function generateProjectDropDown(projectList, selected = 0){
 
     projectList.forEach((project) => {
         const projectOption = document.createElement('option');
-        projectOption.innerText = project.name;
+        projectOption.innerText = `${project.name}`;
         dropDownMenu.appendChild(projectOption);
     })
 
@@ -40,24 +40,29 @@ function generateProjectDropDown(projectList, selected = 0){
     return dropDownMenu; 
 }
 
-function generateProjectDetails(projectList, selected = 0) {
-    const selectedProject = projectList[selected];
+function generateProjectDetails(projectIndex) {
+    
+    const projectButtons = document.createElement('div');
+    projectButtons.classList.add('projectDetails');
 
-    const projectDetails = document.createElement('div');
-    projectDetails.classList.add('projectDetails');
+    // Create Add Project Button
+    const addProjectButton = document.createElement('button');
+    addProjectButton.classList.add('addProjectButton');
+    addProjectButton.dataset.index = projectIndex;
+    addProjectButton.addEventListener('click', addProjectOnClick);
+    projectButtons.appendChild(addProjectButton);
 
-    const projectDescription = document.createElement('p')
-    projectDescription.innerText = selectedProject.description;
+    // Create Delete Project Button
+    const deleteProjectButton = document.createElement('button');
+    deleteProjectButton.classList.add('deleteProjectButton');
+    deleteProjectButton.dataset.index = projectIndex;
+    deleteProjectButton.addEventListener('click', deleteProjectOnClick);
+    projectButtons.appendChild(deleteProjectButton);
 
-    const projectTaskCount = document.createElement('p');
-    projectTaskCount.innerText = 'Tasks: ' + selectedProject.taskList.length;
-
-    projectDetails.appendChild(projectDescription);
-    projectDetails.appendChild(projectTaskCount);
-
-    return projectDetails;
+    return projectButtons;
 }
 
+// Rename to Task
 function generateProjectButtons(projectIndex) {
 
     const projectButtons = document.createElement('div');
@@ -69,20 +74,6 @@ function generateProjectButtons(projectIndex) {
     addTaskButton.dataset.index = projectIndex;
     addTaskButton.addEventListener('click', addTaskOnClick);
     projectButtons.appendChild(addTaskButton);
-
-    // Create Add Project Button
-    const addProjectButton = document.createElement('button');
-    addProjectButton.innerText = 'Add Project'
-    addProjectButton.dataset.index = projectIndex;
-    addProjectButton.addEventListener('click', addProjectOnClick);
-    projectButtons.appendChild(addProjectButton);
-
-    // Create Delete Project Button
-    const deleteProjectButton = document.createElement('button');
-    deleteProjectButton.innerText = 'Delete Project';
-    deleteProjectButton.dataset.index = projectIndex;
-    deleteProjectButton.addEventListener('click', deleteProjectOnClick);
-    projectButtons.appendChild(deleteProjectButton);
 
     return projectButtons;
 }
@@ -101,7 +92,7 @@ function renderProjectHeader() {
     const dropDown = generateProjectDropDown(projectList, projectIndex);
     dropDownWrapper.appendChild(dropDown);
 
-    const details = generateProjectDetails(projectList, projectIndex);
+    const details = generateProjectDetails(projectIndex);
     dropDownWrapper.appendChild(details);
 
     projectHeader.appendChild(dropDownWrapper);
@@ -135,31 +126,24 @@ function generateTaskList(projectList, projectIndex) {
         const taskButtonContaier = document.createElement('div');
         taskButtonContaier.classList.add('taskButtonContainer');
 
+        const taskNumber = document.createElement('p');
+        taskNumber.classList.add('taskNumber');
+        taskNumber.innerText = `#${taskIndex + 1}`;
+        taskInfoContainer.appendChild(taskNumber);
+
         const taskName = document.createElement('p');
         taskName.innerText = name;
         taskInfoContainer.appendChild(taskName);
 
-        const taskDescription = document.createElement('p');
-        taskDescription.innerText = description;
-        taskInfoContainer.appendChild(taskDescription);
-
-        const taskDueDate = document.createElement('p');
-        taskDueDate.innerText = dueDate;
-        taskInfoContainer.appendChild(taskDueDate);
-
-        const taskIsCompleted = document.createElement('p');
-        taskIsCompleted.innerText = isCompleted;
-        taskInfoContainer.appendChild(taskIsCompleted);
-
         const editButton = document.createElement('button');
         editButton.dataset.index = taskIndex;
-        editButton.innerText = 'edit';
+        editButton.classList.add('editTaskButton');
         editButton.addEventListener('click', editTaskOnClick);
         taskButtonContaier.appendChild(editButton);
 
         const deleteButton = document.createElement('button');
         deleteButton.dataset.index = taskIndex;
-        deleteButton.innerText = 'delete';
+        deleteButton.classList.add('deleteTaskButton');
         deleteButton.addEventListener('click', deleteTaskOnClick);
         taskButtonContaier.appendChild(deleteButton);
 
