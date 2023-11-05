@@ -59,7 +59,7 @@ main {
     padding: 0.5em
 }
 
-.dropDownWrapper {
+.projectWrapper {
     display: flex;
     gap: 1em;
     color: white;
@@ -72,7 +72,7 @@ main {
     border-radius: 5px;
 }
 
-.projectDetails {
+.projectButtons {
     display: flex;
     justify-content: space-around;
     gap: 1em;
@@ -101,12 +101,12 @@ main {
     padding: 0;
 }
 
-.projectButtons {
+.taskButtons {
     display: flex;
     gap: 1em;
 }
 
-.projectButtons > button {
+.taskButtons > button {
     flex: 1;
     border-style: none;
     border-radius: 5px;
@@ -131,9 +131,9 @@ main {
 }
 
 .taskContainer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: 1fr;
     padding: 0.5em;
     color: white;
     background-color: #233142;
@@ -150,7 +150,12 @@ main {
 
 .taskNumber {
     font-weight: 800;
+    font-size: 1.25em;
+}
+
+.taskName {
     font-size: 1.1em;
+    font-weight: 800;
 }
 
 .taskButtonContainer {
@@ -184,20 +189,109 @@ main {
     padding: 0;
 }
 
+.detailCollapse {
+    display: grid;
+    grid-column: span 2;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 200ms;
+}
+
+.detailCollapse > div {
+    overflow: hidden;
+}
+
+
+/* --------Entry Forms--------*/
+
 .taskEntryForm {
     display: grid;
     gap: 0.5em;
+    color: white;
+    font-weight: 800;
+}
+
+.taskEntryForm > input {
+    height: 2em;
+}
+
+.taskEntryForm > button {
+    border-style: none;
+    border-radius: 5px;
+    padding: 0.25em 1em;
+    background-color: #f95959;
+    font-size: 1.2em;
+    font-weight: 800;
+    color: #fff;
 }
 
 .projectEntryForm {
     display: grid;
     gap: 0.5em;
+    color: white;
+    font-weight: 800;
 }
 
-/* --------Footer--------*/
+.projectEntryForm > input {
+    height: 2em;
+}
+
+.projectEntryForm > button {
+    border-style: none;
+    border-radius: 5px;
+    padding: 0.25em 1em;
+    background-color: #f95959;
+    font-size: 1.2em;
+    font-weight: 800;
+    color: #fff;
+}
+
+.projectDeleteConfirm {
+    display: grid;
+    gap: 0.5em;
+    color: white;
+    font-weight: 800;
+    text-align: center;
+}
+
+.projectDeleteConfirm > button {
+    border-style: none;
+    border-radius: 5px;
+    padding: 0.25em 1em;
+    background-color: #f95959;
+    font-size: 1.2em;
+    font-weight: 800;
+    color: #fff;
+}
+
+/*--------Footer--------*/
 footer {
     padding: 0.5em;
     color: white;
     text-align: center;
     background-color: #f95959;
+}
+
+/*--------Media Query--------*/
+
+@media screen and (min-width: 913px) {
+    .tabContent {
+        flex-direction: row;
+    }
+    
+    .projectHeader {
+        flex: 1;
+    }
+
+    .projectMain {
+        flex: 3;
+    }
+
+    header {
+        justify-content: center;
+    }
+
+    .title, .logo {
+        flex: 0;
+    }
+
 }

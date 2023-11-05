@@ -7,43 +7,55 @@ import {
     editTask 
 } from './task';
 
+// Used to track currently selected project from drop down list
 let projectIndex = 0;
 
-// Main DOM Element
+// Main DOM Element all content will be appended to
 const tabContent = document.querySelector('.tabContent');
 
-// Displays project selection and details
+// Displays project selection and add task button
 const projectHeader = document.createElement('div');
 projectHeader.classList.add('projectHeader');
 
-// Displays tasks, tasks edits, and project edits
+// Displays tasks, and entry forms
 const projectMain = document.createElement('div');
 projectMain.classList.add('projectMain');
 
-// Header
-function generateProjectDropDown(projectList, selected = 0){
+// -------------Header-------------//
+
+// Generate drop down menu with project list
+function generateProjectDropDown(projectList, selectedOption = 0){
    
-    // Generate drop down menu with project list
     const dropDownMenu = document.createElement('select');
     dropDownMenu.classList.add('dropDownMenu');
     dropDownMenu.addEventListener('change', onProjectSelection);
 
-    projectList.forEach((project) => {
-        const projectOption = document.createElement('option');
-        projectOption.innerText = `${project.name}`;
-        dropDownMenu.appendChild(projectOption);
-    })
+    if (projectList.length > 0) {
 
-    // Set selcted option
-    dropDownMenu[selected].setAttribute('selected', 'selected');
+        projectList.forEach((project) => {
+            const projectOption = document.createElement('option');
+            projectOption.innerText = `${project.name}`;
+            dropDownMenu.appendChild(projectOption);
+        })
+
+    } else {
+        const projectOption = document.createElement('option');
+        projectOption.innerText = 'Create Project -->';
+        dropDownMenu.appendChild(projectOption);
+    }
+
+    // Set selcted option for dropdown list
+    dropDownMenu[selectedOption].setAttribute('selected', 'selected');
 
     return dropDownMenu; 
 }
 
-function generateProjectDetails(projectIndex) {
+// Generate add / delete project buttons
+function generateProjectButtons(projectIndex) {
     
+    // Create div wrapper for project buttons
     const projectButtons = document.createElement('div');
-    projectButtons.classList.add('projectDetails');
+    projectButtons.classList.add('projectButtons');
 
     // Create Add Project Button
     const addProjectButton = document.createElement('button');
@@ -56,60 +68,75 @@ function generateProjectDetails(projectIndex) {
     const deleteProjectButton = document.createElement('button');
     deleteProjectButton.classList.add('deleteProjectButton');
     deleteProjectButton.dataset.index = projectIndex;
-    deleteProjectButton.addEventListener('click', deleteProjectOnClick);
+    deleteProjectButton.addEventListener('click', confirmProjectDeleteOnClick);
     projectButtons.appendChild(deleteProjectButton);
 
     return projectButtons;
 }
 
-// Rename to Task
-function generateProjectButtons(projectIndex) {
+// Generate add task button (potentially more later)
+function generateAddTaskButton(projectIndex) {
 
-    const projectButtons = document.createElement('div');
-    projectButtons.classList.add('projectButtons');
+    // Create div wrapper for task buttons
+    const taskButtons = document.createElement('div');
+    taskButtons.classList.add('taskButtons');
 
     // Create Add Task Button
     const addTaskButton = document.createElement('button');
     addTaskButton.innerText = 'Add Task';
     addTaskButton.dataset.index = projectIndex;
     addTaskButton.addEventListener('click', addTaskOnClick);
-    projectButtons.appendChild(addTaskButton);
+    taskButtons.appendChild(addTaskButton);
 
-    return projectButtons;
+    return taskButtons;
 }
 
+// Render header contents using generate functions
 function renderProjectHeader() {
     const projectList = getProjectList();
     
-    const dropDownWrapper = document.createElement('div');
-    dropDownWrapper.classList.add('dropDownWrapper');
+    // Create div wrapper for project elements
+    const projectWrapper = document.createElement('div');
+    projectWrapper.classList.add('projectWrapper');
 
     // Clear header contents and generate new content
     while (projectHeader.firstChild) {
         projectHeader.removeChild(projectHeader.firstChild);
     }
 
+    // Generate and append dropdown and project buttons
     const dropDown = generateProjectDropDown(projectList, projectIndex);
-    dropDownWrapper.appendChild(dropDown);
+    projectWrapper.appendChild(dropDown);
 
-    const details = generateProjectDetails(projectIndex);
-    dropDownWrapper.appendChild(details);
+    const details = generateProjectButtons(projectIndex);
+    projectWrapper.appendChild(details);
 
-    projectHeader.appendChild(dropDownWrapper);
+    projectHeader.appendChild(projectWrapper);
 
-    const buttons = generateProjectButtons(projectIndex);
+
+    // Generate and append add task button
+    const buttons = generateAddTaskButton(projectIndex);
     projectHeader.appendChild(buttons);
 
     tabContent.appendChild(projectHeader);
 }
 
-// Main
+// -----------------Main-----------------//
 
+// Generate task list from current project task list
 function generateTaskList(projectList, projectIndex) {
-    const taskList = projectList[projectIndex].taskList;
-
+    
+    // Create div wrapper for list of task containers
     const taskListContainer = document.createElement('div');
     taskListContainer.classList.add('taskListContainer');
+
+    console.log(projectList.length)
+
+    if (projectList.length <= 0) {
+        return taskListContainer;
+    }
+
+    const taskList = projectList[projectIndex].taskList;
 
     taskList.forEach((task, taskIndex) => {
         const name = task.name;
@@ -117,14 +144,13 @@ function generateTaskList(projectList, projectIndex) {
         const dueDate = task.dueDate;
         const isCompleted = task.isCompleted;
 
+        // Container for each individual task
         const taskContainer = document.createElement('div');
         taskContainer.classList.add('taskContainer');
 
+        // Info container - contains task number, info, etc
         const taskInfoContainer = document.createElement('div');
         taskInfoContainer.classList.add('taskInfoContainer');
-
-        const taskButtonContaier = document.createElement('div');
-        taskButtonContaier.classList.add('taskButtonContainer');
 
         const taskNumber = document.createElement('p');
         taskNumber.classList.add('taskNumber');
@@ -133,7 +159,12 @@ function generateTaskList(projectList, projectIndex) {
 
         const taskName = document.createElement('p');
         taskName.innerText = name;
+        taskName.classList.add('taskName');
         taskInfoContainer.appendChild(taskName);
+
+        // Task buttons
+        const taskButtonContaier = document.createElement('div');
+        taskButtonContaier.classList.add('taskButtonContainer');
 
         const editButton = document.createElement('button');
         editButton.dataset.index = taskIndex;
@@ -147,8 +178,28 @@ function generateTaskList(projectList, projectIndex) {
         deleteButton.addEventListener('click', deleteTaskOnClick);
         taskButtonContaier.appendChild(deleteButton);
 
+        // Task collapse details
+        const detailCollapse = document.createElement('div');
+        const collapseDiv = document.createElement('div');
+        
+        detailCollapse.classList.add('detailCollapse');
+        detailCollapse.style.gridTemplateRows = '0fr';
+        detailCollapse.dataset.index = taskIndex;
+
+        const taskDescription = document.createElement('p');
+        taskDescription.innerText = `Description: ${description}`;
+        collapseDiv.appendChild(taskDescription);
+
+        const taskDueDate = document.createElement('p');
+        taskDueDate.innerText = `Due: ${dueDate}`;
+        collapseDiv.appendChild(taskDueDate);
+
+        // Append info and buttons to task container
         taskContainer.appendChild(taskInfoContainer);
         taskContainer.appendChild(taskButtonContaier);
+
+        detailCollapse.appendChild(collapseDiv);
+        taskContainer.appendChild(detailCollapse);
 
         taskListContainer.appendChild(taskContainer);
     })
@@ -156,7 +207,9 @@ function generateTaskList(projectList, projectIndex) {
     return taskListContainer;
 }
 
+// Generate task entry form for currently selected project's tasklist
 function generateTaskEntryForm(projectIndex){
+
     const taskEntryForm = document.createElement('form');
     taskEntryForm.classList.add('taskEntryForm');
 
@@ -212,6 +265,7 @@ function generateTaskEntryForm(projectIndex){
     return taskEntryForm;
 }
 
+// Generate project entry form
 function generateProjectEntryForm(){
     const projectEntryForm = document.createElement('form');
     projectEntryForm.classList.add('projectEntryForm');
@@ -254,6 +308,37 @@ function generateProjectEntryForm(){
     return projectEntryForm;
 }
 
+// Generate confirmation message and buttons before project deletion
+function generateProjectDeleteConfirm(projectList, projectIndex) {
+
+    const projectName = projectList[projectIndex].name;
+
+    const projectDeleteConfirm = document.createElement('div');
+    projectDeleteConfirm.classList.add('projectDeleteConfirm');
+
+    // Create confirm message
+    const confirmMessage = document.createElement('p');
+    confirmMessage.innerText = `Are you sure you want to delete 
+    ${projectName}`;
+    projectDeleteConfirm.appendChild(confirmMessage);
+    
+    // Create Delete Project Button
+    const deleteProjectButton = document.createElement('button');
+    deleteProjectButton.innerText = "Delete";
+    deleteProjectButton.dataset.index = projectIndex;
+    deleteProjectButton.addEventListener('click', deleteProjectOnClick);
+    projectDeleteConfirm.appendChild(deleteProjectButton);
+
+    // Create Cancel Button
+    const cancelButton = document.createElement('button')
+    cancelButton.innerText = 'Cancel';
+    cancelButton.addEventListener('click', cancelOnClick);
+    projectDeleteConfirm.appendChild(cancelButton);
+
+    return projectDeleteConfirm;
+}
+
+// Render projectMain based on task entry
 function renderProjectMain(task) {
     const projectList = getProjectList();
    
@@ -276,6 +361,11 @@ function renderProjectMain(task) {
         const projectForm = generateProjectEntryForm();
         projectMain.appendChild(projectForm);
     }
+
+    if (task === 'projectConfirmDelete') {
+        const projectDeleteConfirm = generateProjectDeleteConfirm(projectList, projectIndex);
+        projectMain.appendChild(projectDeleteConfirm);
+    }
     
     tabContent.appendChild(projectMain);
 }
@@ -288,6 +378,7 @@ function setActiveProjectIndex(index) {
 
 // Event Listner Functions
 
+// Project dropdown menu selection change
 function onProjectSelection(){
     setActiveProjectIndex(document.querySelector('.dropDownMenu').selectedIndex);
 
@@ -295,16 +386,17 @@ function onProjectSelection(){
     renderProjectMain('taskList');
 }
 
+// Click add task button
 function addTaskOnClick(button) {
-    console.log('add task');
     renderProjectMain('taskEntry');
 }
 
+// Click add project button
 function addProjectOnClick(button) {
-    console.log('add project');
     renderProjectMain('projectEntry');
 }
 
+// Click submit button on project entry form
 function submitProjectOnClick(button) {
     button.preventDefault();
 
@@ -317,8 +409,13 @@ function submitProjectOnClick(button) {
     renderProjectMain();
 }
 
+// Confirm project delete form
+function confirmProjectDeleteOnClick(button) {
+    renderProjectMain('projectConfirmDelete');
+}
+
+// Click delete project button
 function deleteProjectOnClick(button) {
-    console.log('delete project');
     deleteProject(projectIndex);
     setActiveProjectIndex(0);
     renderProjectHeader();
@@ -326,19 +423,25 @@ function deleteProjectOnClick(button) {
 }
 
 function editTaskOnClick(button) {
-    console.log('edit task');
+    const index = button.target.dataset.index;
+    const details = document.querySelector(`.detailCollapse[data-index="${index}"`);
+    
+    if (details.style.gridTemplateRows === "0fr") {
+        details.style.gridTemplateRows = "1fr";
+    } else {
+        details.style.gridTemplateRows = "0fr";
+    }    
 }
 
+// Click delete button on task list
 function deleteTaskOnClick(button) {
-    console.log('delete task');
     const taskIndex = button.target.dataset.index;
-    console.log(taskIndex);
-    console.log(projectIndex);
     deleteTask(projectIndex, taskIndex);
     renderProjectHeader();
     renderProjectMain('taskList');
 }
 
+// Click submit button on task entry form
 function submitTaskOnClick(button) {
     button.preventDefault();
 
@@ -352,6 +455,7 @@ function submitTaskOnClick(button) {
     renderProjectMain('taskList');
 }
 
+// Click cancel button on any form
 function cancelOnClick(button) {
     button.preventDefault();
     renderProjectMain('taskList');
